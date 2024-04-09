@@ -15,12 +15,14 @@ const router = new VueRouter({
   routes: [
     {
       path: '/login',
-      component: () => import(/*webpackChunkName:'login'*/'./pages/login')
+      meta: { title: 'Login', icon: '' },
+      component: () => import(/*webpackChunkName:'login'*/'./pages/login'),
+      hidden: true,
     },
     {
       path: '/',
       component: Layout,
-      meta: { title: '首页', icon: '' },
+      meta: { title: 'Home', icon: '' },
       children: [
         {
           path: '/',

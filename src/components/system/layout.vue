@@ -71,7 +71,7 @@ export default {
     }
     let token = localStorage.getItem('token')
     if (!token) {
-      this.$router.push('/login')
+      // this.$router.push('/login')
     }
   },
   mounted() {

@@ -69,6 +69,10 @@ export default {
     if (this.theme) {
       document.documentElement.setAttribute('theme-mode', this.theme);
     }
+    let token = localStorage.getItem('token')
+    if (!token) {
+      this.$router.push('/login')
+    }
   },
   mounted() {
   },

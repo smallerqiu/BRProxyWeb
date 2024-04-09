@@ -3,7 +3,7 @@
     <div class="logo-box">
       <img src="/favicon.svg" class="logo" />
       <transition>
-        <span v-show="!collapsed">DBProxy</span>
+        <span v-show="!collapsed">BRProxy</span>
       </transition>
     </div>
     <Menu mode="inline" class="sys-menu" v-model="activeMenu" @open-change="openChange" :open-keys="openKeys"

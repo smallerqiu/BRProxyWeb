@@ -3,7 +3,7 @@
  */
 // import FileSaver from 'file-saver';
 // const XLSX = require('xlsx');
-import { Notice } from "kui-vue";
+import { Message, Notice } from "kui-vue";
 const http = {
   _maps: {},
   cancel: function () {
@@ -27,13 +27,8 @@ http._base = (method, url, data) => {
   http._maps[key] = controller
   return new Promise((res, rej) => {
     let options = { method: method, signal: controller.signal, headers: {} }
-    if (url.indexOf('/es') >= 0) {
-      options.headers.Authorization = 'Basic ' + btoa('fb_guest:Fb@123_guest')
-    } else if (url.indexOf('/api') >= 0) {
 
-    } else {
-      url = process.env.VUE_APP_BASE_API + url
-    }
+    url = 'https://d1v25bs7gljqw0.cloudfront.net' + url
     // url = ((url.indexOf('/api') < 0 || url.indexOf('/es') < 0) ? process.env.VUE_APP_BASE_API : '') + url
     if (method == 'post' || method == 'put') {
       if (data instanceof FormData) {
@@ -60,11 +55,16 @@ http._base = (method, url, data) => {
         throw new Error(r.statusText)
       }
     }).then((data) => {
+      if (!data.success) {
+        Message.destroy()
+        Message.error(data.data)
+        rej(data)
+        return
+      }
       res(data)
     }).catch(err => {
-      // console.log(err)
       Notice.destroy()
-      Notice.error({ title: '提示', content: err.message || 'Internal Server Error' })
+      Notice.error({ title: 'Prompt', content: err.message || 'Internal Server Error' })
       rej(err)
     }).finally(() => {
       delete http._maps[key]

@@ -11,8 +11,15 @@ module.exports = defineConfig({
     config
       .plugin('html')
       .tap(args => {
-        args[0].title = "DBProxy";
+        args[0].title = "BRProxy";
         return args;
       })
   },
+  devServer: {
+    port: 8080,
+    // open: true,
+    client: {
+      overlay: false //关掉错误弹层
+    },
+  }
 })

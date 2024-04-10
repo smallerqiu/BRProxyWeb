@@ -1,26 +1,47 @@
 <template>
   <div class="home">
+    <Card title="我的" :icon="Heart" bordered>
     <Space class="items">
       <div class="item">
         <span class="key">总消费</span>
-        <span class="value">{{ parseFloat( my_info.total_fee || 0)}}</span>
+        <span class="value">USD {{ parseFloat( my_info.total_fee || 0)}}</span>
       </div>
       <div class="item">
         <span class="key">本月消费</span>
-        <span class="value">{{  parseFloat(my_info.month_fee || 0)}}</span>
+        <span class="value">USD {{  parseFloat(my_info.month_fee || 0)}}</span>
       </div>
       <div class="item">
         <span class="key">本月额度</span>
-        <span class="value">{{  parseFloat(my_info.month_quota|| 0) }}</span>
+        <span class="value">USD {{  parseFloat(my_info.month_quota|| 0) }}</span>
       </div>
       <div class="item">
         <span class="key">余额</span>
-        <span class="value">{{ parseFloat( my_info.balance || 0)}}</span>
+        <span class="value"> USD {{ parseFloat( my_info.balance || 0)}}</span>
       </div>
     </Space>
-    <Table :data="data" :columns="columns">
+    </Card>
+    
+    <Card title="全体" :icon="Heart" bordered>
+    <Space class="items">
+      <div class="item">
+        <span class="key">总消费</span>
+        <span class="value">USD {{ parseFloat( my_info.total_fee || 0)}}</span>
+      </div>
+      <div class="item">
+        <span class="key">本月消费</span>
+        <span class="value">USD {{  parseFloat(my_info.month_fee || 0)}}</span>
+      </div>
+      <div class="item">
+        <span class="key">本月额度</span>
+        <span class="value">USD {{  parseFloat(my_info.month_quota|| 0) }}</span>
+      </div>
+      <div class="item">
+        <span class="key">余额</span>
+        <span class="value"> USD {{ parseFloat( my_info.balance || 0)}}</span>
+      </div>
+    </Space>
+      </Card>
 
-    </Table>
   </div>
 </template>
 <script>

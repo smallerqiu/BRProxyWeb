@@ -15,8 +15,8 @@
             </Dropdown>
             <Button :icon="theme != 'dark' ? Moon : Sunny" theme="normal" size="small" @click="switchMode" />
             <!-- <Input :icon="Search" theme="light" shape="circle" placeholder="搜索" style="width:200px" /> -->
-            <Avatar style="background:#3a95ff" :size="25">C</Avatar>
-            <span>Cloudbeer</span>
+            <Avatar style="background:#3a95ff" :size="25">{{ name }}</Avatar>
+            <span>{{ name }}</span>
           </Space>
           </Col>
         </Row>
@@ -59,7 +59,8 @@ export default {
       timer: null,
       loading: false,
       Search, NotificationsOutline, Sunny, Moon,
-      theme: localStorage.getItem('theme')
+      theme: localStorage.getItem('theme'),
+      name: localStorage.getItem('name') || '',
     };
   },
   components: { Status, Tab, Sider, Main },
@@ -69,9 +70,9 @@ export default {
     if (this.theme) {
       document.documentElement.setAttribute('theme-mode', this.theme);
     }
-    let token = localStorage.getItem('token')
-    if (!token) {
-      // this.$router.push('/login')
+    let key = localStorage.getItem('key')
+    if (!key) {
+      this.$router.push('/login')
     }
   },
   mounted() {

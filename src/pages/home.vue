@@ -1,43 +1,43 @@
 <template>
   <div class="home">
-    <Card title="我的" :icon="Heart" bordered>
+    <Card title="我的" bordered>
       <Space class="items">
         <div class="item">
           <span class="key">总消费</span>
-          <span class="value">USD {{ parseFloat(my_info.total_fee || 0) }}</span>
+          <span class="value">{{ parseFloat(my_info.total_fee || 0) }}<span class="sub">USD</span></span>
         </div>
         <div class="item">
           <span class="key">本月消费</span>
-          <span class="value">USD {{ parseFloat(my_info.month_fee || 0) }}</span>
+          <span class="value">{{ parseFloat(my_info.month_fee || 0) }}<span class="sub">USD</span></span>
         </div>
         <div class="item">
           <span class="key">本月额度</span>
-          <span class="value">USD {{ parseFloat(my_info.month_quota || 0) }}</span>
+          <span class="value">{{ parseFloat(my_info.month_quota || 0) }}<span class="sub">USD</span></span>
         </div>
         <div class="item">
           <span class="key">余额</span>
-          <span class="value"> USD {{ parseFloat(my_info.balance || 0) }}</span>
+          <span class="value">{{ parseFloat(my_info.balance || 0) }}<span class="sub">USD</span></span>
         </div>
       </Space>
     </Card>
 
-    <Card title="全体" :icon="Heart" bordered>
+    <Card title="全体" bordered>
       <Space class="items">
         <div class="item">
           <span class="key">总消费</span>
-          <span class="value">USD {{ parseFloat(my_info.total_fee || 0) }}</span>
+          <span class="value">{{ parseFloat(my_info.total_fee || 0) }}<span class="sub">USD</span></span>
         </div>
         <div class="item">
           <span class="key">本月消费</span>
-          <span class="value">USD {{ parseFloat(my_info.month_fee || 0) }}</span>
+          <span class="value">{{ parseFloat(my_info.month_fee || 0) }}<span class="sub">USD</span></span>
         </div>
         <div class="item">
           <span class="key">本月额度</span>
-          <span class="value">USD {{ parseFloat(my_info.month_quota || 0) }}</span>
+          <span class="value">{{ parseFloat(my_info.month_quota || 0) }}<span class="sub">USD</span></span>
         </div>
         <div class="item">
           <span class="key">余额</span>
-          <span class="value"> USD {{ parseFloat(my_info.balance || 0) }}</span>
+          <span class="value">{{ parseFloat(my_info.balance || 0) }}<span class="sub">USD</span></span>
         </div>
       </Space>
     </Card>
@@ -85,15 +85,33 @@ export default {
   }
 
   .item {
-    background: #f5f5f5;
+    background: var(--kui-color-gray-90);
     border-radius: 16px;
     flex: 1;
     padding: 20px;
+    display: flex;
+    flex-direction: column;
 
     .key {
       font-weight: bold;
       margin-right: 10px;
     }
+
+    .value {
+      margin-top: 8px;
+    }
+
+    .sub {
+      color: var(--kui-color-gray-30);
+      font-size: 12px;
+      margin-left: 8px;
+    }
+
+
+  }
+
+  .k-card {
+    margin-bottom: 20px;
   }
 }
 </style>

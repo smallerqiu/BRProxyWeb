@@ -27,28 +27,31 @@ export default {
       }
     }
   },
-  created(){
-    this.form.host = localStorage.getItem("host");
+  created() {
+    this.form.host = localStorage.getItem("host") || ''
   },
   methods: {
     login({ valid }) {
       if (!valid) {
-        alert("填写错误");
+        return false;
       }
-      let {host,key} = this.form;
+      let { host, key } = this.form;
       if (host.endsWith("/")) {
-        host = host.substring(0, host.length-1);
+        host = host.substring(0, host.length - 1);
+      }
+      if (!host) {
+        return this.$Message.error('Please input he host')
       }
       this.loading = true;
-      localStorage.setItem("host", host);
       this.$http.get(host + '/user/api-key/mine', null, key).then(res => {
-        console.log(res);
-        if(res.success){
+        // console.log(res);
+        if (res.success) {
           localStorage.setItem("key", key);
           localStorage.setItem("name", res.data.name);
           localStorage.setItem("role", res.data.role);
+          localStorage.setItem("host", host);
           this.$router.push('/')
-        }else{
+        } else {
           alert(res.data);
         }
       }).finally(() => {

@@ -5,21 +5,35 @@
       <Button @click="get_data">Query</Button>
       <Button @click="add">New</Button>
     </Space>
-    <Table :data="items" :columns="columns">
+    <Table :data="items" :columns="columns" :loading="loading">
       <template v-slot:action="c, row">
         <Space>
-          <Button size="small" type="danger" @click="del(row)">Del</Button>
+          <Button size="small" @click="del(row)">Del</Button>
+          <Button size="small" @click="recharge(row)">Recharge</Button>
           <Button size="small" @click="edit(row)">Edit</Button>
         </Space>
       </template>
     </Table>
-    <Modal :title="action == 'new' ? 'New' : 'Edit'" v-model="show">
-      <Form :model="form" :rules="rules" layout="vertical" @submit="save">
-        <FormItem label="Host" prop="host">
-          <Input placeholder="https://" theme="light" />
+    <Page :current="page" :total="total" @change="change" />
+    <Modal :title="title" v-model="show" @ok="save" :loading="saving">
+      <Form :model="form" :rules="rules" layout="vertical" ref="form">
+        <FormItem label="Name" prop="name">
+          <Input placeholder="name" theme="light" />
         </FormItem>
-        <FormItem label="API Key" prop="key">
-          <Input placeholder="Please input api key..." theme="light" />
+        <FormItem label="Email" prop="email">
+          <Input theme="light" />
+        </FormItem>
+        <FormItem label="Total Fee" prop="total_fee" v-if="action != 'recharge'">
+          <Input theme="light" />
+        </FormItem>
+        <!-- <FormItem label="Balance" prop="balance">
+          <Input theme="light" />
+        </FormItem> -->
+        <FormItem label="Month Fee" prop="month_fee" v-if="action != 'recharge'">
+          <Input theme="light" />
+        </FormItem>
+        <FormItem label="Month Quota" prop="month_quota" v-if="action != 'recharge'">
+          <Input theme="light" />
         </FormItem>
       </Form>
     </Modal>
@@ -30,6 +44,7 @@ export default {
   data() {
     return {
       items: [],
+      title: '',
       columns: [
         { key: 'name', title: 'Name' },
         // { key: 'api_key', title: 'Key' },
@@ -42,46 +57,103 @@ export default {
         // { key: 'created_at', title: 'Date' },
         { key: 'action', title: 'Action' },
       ],
-      form: { key: '', host: '' },
+      form: { name: '', email: '', role: '', total_fee: '', month_fee: '', month_quota: '' },
       rules: {
-        key: [{ required: true, message: 'Please input key...' }],
-        host: [{ required: true, message: 'Please input Host...' }]
+        name: [{ required: true, message: 'Please input name...' }],
+        email: [{ required: true, message: 'Please input email...' }]
       },
       action: "add",
-      show: false
+      show: false,
+      page: 1,
+      size: 15,
+      total: 0,
+      loading: false,
+      saving: false,
     }
   },
   mounted() {
     this.get_data()
   },
   methods: {
+    change(page) {
+      this.page = page
+      this.get_data()
+    },
     get_data() {
-
-      const host = localStorage.getItem("host");
-      const key = localStorage.getItem("key");
-      this.$http.get(host + '/admin/api-key/list',null, key).then(res => {
-        this.items = res.data.items;
+      // const host = localStorage.getItem("host");
+      // const key = localStorage.getItem("key");
+      this.loading = true
+      let { page, size } = this
+      this.$http.get('/admin/api-key/list', { limit: size, offset: (page - 1) * size }).then(res => {
+        let items = res.data.items
+        this.total = parseInt(res.data.total)
+        items.map(item => {
+          item.total_fee = parseFloat(item.total_fee)
+          item.balance = parseFloat(item.balance)
+          item.month_fee = parseFloat(item.month_fee)
+          item.month_quota = parseFloat(item.month_quota)
+          return item
+        })
+        this.items = items
+      }).finally(() => {
+        this.loading = false
       })
     },
     del({ id }) {
-      this.$http.delete('/xxx', { id }).then(res => {
+      // this.$http.delete('/xxx', { id }).then(res => {
 
-      })
+      // })
     },
     edit(row) {
       this.form = row
-      this.actino = 'edit'
+      this.title = 'Edit'
+      this.action = 'edit'
+      this.show = true
+    },
+    recharge(row) {
+      this.form = row
+      this.title = "Recharge"
+      this.action = 'recharge'
       this.show = true
     },
     add() {
-      this.action = 'add'
+      this.action = 'new'
+      this.title = 'New'
       this.show = true
+      this.form.id = ''
+      this.$nextTick(() => {
+        this.$refs.form.reset()
+      })
     },
     save() {
-      this.$http.post('/xxx', this.form).then(res => {
-
+      this.$refs.form.validate(v => {
+        if (v) {
+          this.saving = true
+          if (this.action == 'recharge') {
+            let { id, balance } = this.form
+            this.$http.post('/admin/api-key/recharge', { id, balance }).then(res => {
+              this.show = false
+              this.$Message.success("Save successfuly.")
+            }).finally(() => {
+              this.saving = false
+            })
+            return
+          }
+          this.$http.post('/admin/api-key/update', this.form).then(res => {
+            this.show = false
+            this.$Message.success("Save successfuly.")
+          }).finally(() => {
+            this.saving = false
+          })
+        }
       })
+
     }
   }
 }
 </script>
+<style lang="less">
+.my-keys {
+  padding: 20px;
+}
+</style>

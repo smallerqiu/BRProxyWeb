@@ -27,17 +27,20 @@ http._base = (method, url, data, api_key) => {
   http._maps[key] = controller
   return new Promise((res, rej) => {
     let options = {
-      method: method, signal: controller.signal, headers: {
-        "Authorization": "Bearer " + api_key
+      method: method, signal: controller.signal, headers: {}
+    }
+    options.headers["Authorization"] = "Bearer " + (api_key || localStorage.getItem('key'));
+    if (!url.startsWith('http')) {
+      let host = localStorage.getItem('host')
+      // key = localStorage.getItem('key')
+      if (!host) {
+        throw new Error("Nees host.")
       }
+      if (host.startsWith('/')) {
+        host = host.substring(0, host.length - 1);
+      }
+      url = host + url
     }
-    if (api_key) {
-      options.headers["Authorization"] = "Bearer " + api_key;
-    } else {
-      options.headers["Authorization"] = "Bearer " + localStorage.getItem('api_key');
-    }
-
-    // url = ((url.indexOf('/api') < 0 || url.indexOf('/es') < 0) ? process.env.VUE_APP_BASE_API : '') + url
     if (method == 'post' || method == 'put') {
       if (data instanceof FormData) {
         options.body = data

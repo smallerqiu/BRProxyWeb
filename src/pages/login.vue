@@ -3,8 +3,11 @@
     <div class="login-box">
       <h1>Sign in to BRProxy</h1>
       <Form size="large" :model="form" :rules="rules" layout="vertical" @submit="login">
-        <FormItem label="" prop="key">
-          <Input type="password" placeholder="Please input key..." theme="light" />
+        <FormItem label="Host" prop="host">
+          <Input type="text" placeholder="https://" theme="light" />
+        </FormItem>
+        <FormItem label="API Key" prop="key">
+          <Input type="password" placeholder="Please input api key..." theme="light" />
         </FormItem>
         <FormItem class="btn">
           <Button type="primary" :loading="loading" htmlType="submit">Sign in</Button>
@@ -18,22 +21,40 @@ export default {
   data() {
     return {
       loading: false,
-      form: { key: '' },
+      form: { key: '', host: '' },
       rules: {
         key: [{ required: true, message: 'Please input key...' }]
       }
     }
   },
+  created(){
+    this.form.host = localStorage.getItem("host");
+  },
   methods: {
     login({ valid }) {
-      // https://d1v25bs7gljqw0.cloudfront.net
-      // br-NVKApACW2JsPSFdW04W7m90H51kVs
-      this.loading = true
-      this.$http.get('/user/api-key/mine', this.form).then(res => {
-
+      if (!valid) {
+        alert("填写错误");
+      }
+      let {host,key} = this.form;
+      if (host.endsWith("/")) {
+        host = host.substring(0, host.length-1);
+      }
+      this.loading = true;
+      localStorage.setItem("host", host);
+      this.$http.get(host + '/user/api-key/mine', null, key).then(res => {
+        console.log(res);
+        if(res.success){
+          localStorage.setItem("key", key);
+          localStorage.setItem("name", res.data.name);
+          localStorage.setItem("role", res.data.role);
+          this.$router.push('/')
+        }else{
+          alert(res.data);
+        }
       }).finally(() => {
         this.loading = false
-      })
+      });
+
     }
   }
 }
@@ -72,7 +93,7 @@ export default {
   .login-box {
     background-color: #ffffffb5;
     width: 500px;
-    height: 200px;
+    height: 300px;
     position: absolute;
     z-index: 100;
     top: 50%;

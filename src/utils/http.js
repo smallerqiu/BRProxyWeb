@@ -21,14 +21,22 @@ const filter_null = (obj) => {
   }
   return obj
 }
-http._base = (method, url, data) => {
+http._base = (method, url, data, api_key) => {
   const controller = new AbortController();
   const key = Date.now() * 1
   http._maps[key] = controller
   return new Promise((res, rej) => {
-    let options = { method: method, signal: controller.signal, headers: {} }
+    let options = {
+      method: method, signal: controller.signal, headers: {
+        "Authorization": "Bearer " + api_key
+      }
+    }
+    if (api_key) {
+      options.headers["Authorization"] = "Bearer " + api_key;
+    } else {
+      options.headers["Authorization"] = "Bearer " + localStorage.getItem('api_key');
+    }
 
-    url = 'https://d1v25bs7gljqw0.cloudfront.net' + url
     // url = ((url.indexOf('/api') < 0 || url.indexOf('/es') < 0) ? process.env.VUE_APP_BASE_API : '') + url
     if (method == 'post' || method == 'put') {
       if (data instanceof FormData) {
@@ -74,7 +82,7 @@ http._base = (method, url, data) => {
 
 
 ['get', 'post', 'put', 'delete'].forEach(m => {
-  http[m] = (url, data) => http._base(m, url, data)
+  http[m] = (url, data, api_key) => http._base(m, url, data, api_key);
 });
 
 export default http

@@ -1,38 +1,55 @@
 <template>
   <div class="home">
+    <Card title="我的" :icon="Heart" bordered>
     <Space class="items">
       <div class="item">
         <span class="key">总消费</span>
-        <span class="value">{{ details.fee_total }}</span>
+        <span class="value">USD {{ parseFloat( my_info.total_fee || 0)}}</span>
       </div>
       <div class="item">
         <span class="key">本月消费</span>
-        <span class="value">{{ details.fee_month }}</span>
+        <span class="value">USD {{  parseFloat(my_info.month_fee || 0)}}</span>
       </div>
       <div class="item">
         <span class="key">本月额度</span>
-        <span class="value">{{ details.fee_total }}</span>
+        <span class="value">USD {{  parseFloat(my_info.month_quota|| 0) }}</span>
       </div>
       <div class="item">
         <span class="key">余额</span>
-        <span class="value">{{ details.balance }}</span>
+        <span class="value"> USD {{ parseFloat( my_info.balance || 0)}}</span>
       </div>
     </Space>
-    <Table :data="data" :columns="columns">
+    </Card>
+    
+    <Card title="全体" :icon="Heart" bordered>
+    <Space class="items">
+      <div class="item">
+        <span class="key">总消费</span>
+        <span class="value">USD {{ parseFloat( my_info.total_fee || 0)}}</span>
+      </div>
+      <div class="item">
+        <span class="key">本月消费</span>
+        <span class="value">USD {{  parseFloat(my_info.month_fee || 0)}}</span>
+      </div>
+      <div class="item">
+        <span class="key">本月额度</span>
+        <span class="value">USD {{  parseFloat(my_info.month_quota|| 0) }}</span>
+      </div>
+      <div class="item">
+        <span class="key">余额</span>
+        <span class="value"> USD {{ parseFloat( my_info.balance || 0)}}</span>
+      </div>
+    </Space>
+      </Card>
 
-    </Table>
   </div>
 </template>
 <script>
 export default {
   data() {
     return {
-      details: {
-        fee_total: 100,
-        fee_month: 200,
-        limit_month: 200,
-        balance: 1200,
-      },
+      loading: false,
+      my_info: {},
       data: [],
       columns: [
         { title: 'Date', key: '' },
@@ -40,6 +57,23 @@ export default {
         { title: 'Type', key: '' }
       ]
     }
+  },
+  created(){
+    const host = localStorage.getItem("host");
+    const key = localStorage.getItem("key");
+    localStorage.setItem("host", host);
+      this.$http.get(host + '/user/api-key/mine', null, key).then(res => {
+        if(res.success){
+          this.my_info = res.data;
+        }else{
+          alert(res.data);
+        }
+      }).finally(() => {
+        this.loading = false
+      });
+  },
+  methods:{
+
   }
 }
 </script>

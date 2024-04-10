@@ -33,10 +33,8 @@ export default {
   methods: {
     login({ valid }) {
       if (!valid) {
-        alert("登陆错误");
+        alert("填写错误");
       }
-      // https://d1v25bs7gljqw0.cloudfront.net
-      // br-NVKApACW2JsPSFdW04W7m90H51kVs
       let {host,key} = this.form;
       if (host.endsWith("/")) {
         host = host.substring(0, host.length-1);

@@ -42,6 +42,12 @@ const router = new VueRouter({
           name: 'Admin',
           meta: { title: 'API Keys', icon: Hammer },
           component: () => import(/*webpackChunkName:'Home'*/'./pages/keys')
+        },
+        {
+          path: '/admin/huati',
+          name: 'huati',
+          meta: { title: '话题列表', icon: Hammer },
+          component: () => import(/*webpackChunkName:'Home'*/'./pages/huati')
         }
       ]
     },

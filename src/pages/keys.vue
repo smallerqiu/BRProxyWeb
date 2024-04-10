@@ -5,7 +5,7 @@
       <Button @click="get_data">Query</Button>
       <Button @click="add">New</Button>
     </Space>
-    <Table :data="datas" :columns="columns">
+    <Table :data="items" :columns="columns">
       <template v-slot:action="c, row">
         <Space>
           <Button size="small" type="danger" @click="del(row)">Del</Button>
@@ -13,7 +13,7 @@
         </Space>
       </template>
     </Table>
-    <Model :title="action == 'new' ? 'New' : 'Edit'" v-model="show">
+    <Modal :title="action == 'new' ? 'New' : 'Edit'" v-model="show">
       <Form :model="form" :rules="rules" layout="vertical" @submit="save">
         <FormItem label="Host" prop="host">
           <Input placeholder="https://" theme="light" />
@@ -22,24 +22,24 @@
           <Input placeholder="Please input api key..." theme="light" />
         </FormItem>
       </Form>
-    </Model>
+    </Modal>
   </div>
 </template>
 <script>
 export default {
   data() {
     return {
-      datas: [],
+      items: [],
       columns: [
         { key: 'name', title: 'Name' },
-        { key: 'api_key', title: 'Key' },
+        // { key: 'api_key', title: 'Key' },
         { key: 'email', title: 'Email' },
         { key: 'role', title: 'Role' },
         { key: 'total_fee', title: '总消费' },
         { key: 'balance', title: '余额' },
         { key: 'month_fee', title: '本月消费' },
         { key: 'month_quota', title: '本月额度' },
-        { key: 'created_at', title: 'Date' },
+        // { key: 'created_at', title: 'Date' },
         { key: 'action', title: 'Action' },
       ],
       form: { key: '', host: '' },
@@ -56,8 +56,11 @@ export default {
   },
   methods: {
     get_data() {
-      this.$http.get('/xxx').then(res => {
 
+      const host = localStorage.getItem("host");
+      const key = localStorage.getItem("key");
+      this.$http.get(host + '/admin/api-key/list',null, key).then(res => {
+        this.items = res.data.items;
       })
     },
     del({ id }) {

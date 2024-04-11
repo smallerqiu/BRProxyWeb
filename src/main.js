@@ -10,7 +10,9 @@ import './assets/css/index.less'
 
 import en from 'kui-vue/dist/locale/en'
 import zh from 'kui-vue/dist/locale/zhCN'
+import Copy from 'vue-clipboard2'
 
+Vue.use(Copy)
 Vue.config.productionTip = false
 
 

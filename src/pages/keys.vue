@@ -4,35 +4,40 @@
       <Input />
       <Button @click="get_data">Query</Button>
       <Button @click="add">New</Button>
+      <Button @click="imports">Import</Button>
     </Space>
     <Table :data="items" :columns="columns" :loading="loading">
+      <template v-slot:api_key="c, row">
+        <Space>
+          {{ format_key(row) }}
+          <Tooltip title="Copy Key">
+            <Button :icon="Copy" theme="normal" size="small" @click="copy(row)" />
+          </Tooltip>
+        </Space>
+      </template>
       <template v-slot:action="c, row">
         <Space>
-          <!-- <Button size="small" @click="del(row)">Del</Button> -->
           <Button size="small" @click="recharge(row)">Recharge</Button>
           <Button size="small" @click="edit(row)">Edit</Button>
         </Space>
       </template>
     </Table>
-    <Page :current="page" :total="total" @change="change" />
+    <Page :current="page" :total="total" @change="change" :page-size="size" />
     <Modal :title="title" v-model="show" @ok="save" :loading="saving">
       <Form :model="form" :rules="rules" layout="vertical" ref="form">
         <FormItem label="Name" prop="name">
-          <Input placeholder="name" theme="light" />
+          <Input placeholder="name" theme="light" :readonly="action == 'recharge'" />
         </FormItem>
-        <FormItem label="Email" prop="email" readonly="action == 'recharge'">
+        <FormItem label="Email" prop="email" :readonly="action == 'recharge'">
           <Input theme="light" />
         </FormItem>
-        <FormItem label="Role" prop="role"  v-if="action != 'recharge'">
-      <Select :width="200" v-model="select">
-        <Option  value="user" label="普通用户" />
-        <Option  value="admin" label="管理员"  />
-      </Select>
+        <FormItem label="Role" prop="role" v-if="action != 'recharge'">
+          <Select :width="200">
+            <Option value="user" label="普通用户" />
+            <Option value="admin" label="管理员" />
+          </Select>
         </FormItem>
-        <!-- <FormItem label="Balance" prop="balance">
-          <Input theme="light" />
-        </FormItem> -->
-        <FormItem label="Balance" prop="balance" v-if="action=='recharge'">
+        <FormItem label="Balance" prop="balance" v-if="action == 'recharge'">
           <Input theme="light" />
         </FormItem>
         <FormItem label="Month Quota" prop="month_quota" v-if="action != 'recharge'">
@@ -43,9 +48,11 @@
   </div>
 </template>
 <script>
+import { Copy } from 'kui-icons'
 export default {
   data() {
     return {
+      Copy,
       items: [],
       title: '',
       columns: [
@@ -60,7 +67,7 @@ export default {
         // { key: 'created_at', title: 'Date' },
         { key: 'action', title: 'Action' },
       ],
-      form: { name: '', email: '', role: 'user', month_quota: '' ,balance:0},
+      form: { name: '', email: '', role: 'user', month_quota: '', balance: 0 },
       rules: {
         name: [{ required: true, message: 'Please input name...' }],
       },
@@ -77,18 +84,28 @@ export default {
     this.get_data()
   },
   methods: {
+    copy({ api_key }) {
+      this.$copyText(api_key).then(e => {
+        this.$Message.success('Copied')
+      }, e => {
+        this.$Message.error('Copied faild.')
+      })
+    },
+    format_key({ api_key }) {
+      return api_key ? api_key.substr(0, 5) + '...' + api_key.substr(-3) : ""
+    },
+    imports() {
+
+    },
     change(page) {
       this.page = page
       this.get_data()
     },
     get_data() {
-      // const host = localStorage.getItem("host");
-      // const key = localStorage.getItem("key");
       this.loading = true
       let { page, size } = this
       this.$http.get('/admin/api-key/list', { limit: size, offset: (page - 1) * size }).then(res => {
         let items = res.data.items
-        this.total = parseInt(res.data.total)
         items.map(item => {
           item.total_fee = parseFloat(item.total_fee)
           item.balance = parseFloat(item.balance)
@@ -96,16 +113,11 @@ export default {
           item.month_quota = parseFloat(item.month_quota)
           return item
         });
-        this.total = ~~res.data.total;
+        this.total = res.data.total * 1
         this.items = items
       }).finally(() => {
         this.loading = false
       })
-    },
-    del({ id }) {
-      // this.$http.delete('/xxx', { id }).then(res => {
-
-      // })
     },
     edit(row) {
       this.form = row
@@ -124,6 +136,7 @@ export default {
       this.title = 'New'
       this.show = true
       this.form.id = ''
+      this.form.role = 'user'
       this.$nextTick(() => {
         this.$refs.form.reset()
       })

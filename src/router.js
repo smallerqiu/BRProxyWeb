@@ -36,6 +36,7 @@ const router = new VueRouter({
       path: '/admin',
       component: Layout,
       meta: { title: 'Admin', icon: Hammer },
+      // hidden: (localStorage.getItem('role') == 'admin'),
       children: [
         {
           path: '/admin/keys',

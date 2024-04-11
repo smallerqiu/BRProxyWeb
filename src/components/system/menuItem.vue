@@ -3,12 +3,13 @@
     <MItem :key="getPath(basePath, item.path)" v-for="item in route.children" :route="item" :base-path="route.path">
     </MItem>
   </SubMenu>
-  <MenuItem :key="getPath(basePath,onlyChild.path)" :icon="onlyChild.meta.icon" v-else-if="!onlyChild.hidden||!route.hidden">{{ onlyChild.meta.title }}</MenuItem>
+  <MenuItem :key="getPath(basePath, onlyChild.path)" :icon="onlyChild.meta.icon"
+    v-else-if="!onlyChild.hidden && !route.hidden">{{ onlyChild.meta.title }}</MenuItem>
 </template>
 <script>
 import path from 'path'
 export default {
-  name:'MItem',
+  name: 'MItem',
   props: {
     route: {
       type: Object,

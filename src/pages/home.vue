@@ -21,7 +21,7 @@
       </Space>
     </Card>
 
-    <Card title="全体" bordered v-if="false">
+    <Card title="全体" bordered v-if="is_admin">
       <Space class="items">
         <div class="item">
           <span class="key">总消费</span>
@@ -55,6 +55,11 @@ export default {
         { title: 'Amount', key: '' },
         { title: 'Type', key: '' }
       ]
+    }
+  },
+  computed: {
+    is_admin() {
+      return localStorage.getItem('role') == 'admin'
     }
   },
   created() {

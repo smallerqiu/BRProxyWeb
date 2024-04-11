@@ -8,7 +8,7 @@
     <Table :data="items" :columns="columns" :loading="loading">
       <template v-slot:action="c, row">
         <Space>
-          <Button size="small" @click="del(row)">Del</Button>
+          <!-- <Button size="small" @click="del(row)">Del</Button> -->
           <Button size="small" @click="recharge(row)">Recharge</Button>
           <Button size="small" @click="edit(row)">Edit</Button>
         </Space>
@@ -20,16 +20,19 @@
         <FormItem label="Name" prop="name">
           <Input placeholder="name" theme="light" />
         </FormItem>
-        <FormItem label="Email" prop="email">
+        <FormItem label="Email" prop="email" readonly="action == 'recharge'">
           <Input theme="light" />
         </FormItem>
-        <FormItem label="Total Fee" prop="total_fee" v-if="action != 'recharge'">
-          <Input theme="light" />
+        <FormItem label="Role" prop="role"  v-if="action != 'recharge'">
+      <Select :width="200" v-model="select">
+        <Option  value="user" label="普通用户" />
+        <Option  value="admin" label="管理员"  />
+      </Select>
         </FormItem>
         <!-- <FormItem label="Balance" prop="balance">
           <Input theme="light" />
         </FormItem> -->
-        <FormItem label="Month Fee" prop="month_fee" v-if="action != 'recharge'">
+        <FormItem label="Balance" prop="balance" v-if="action=='recharge'">
           <Input theme="light" />
         </FormItem>
         <FormItem label="Month Quota" prop="month_quota" v-if="action != 'recharge'">
@@ -47,7 +50,7 @@ export default {
       title: '',
       columns: [
         { key: 'name', title: 'Name' },
-        // { key: 'api_key', title: 'Key' },
+        { key: 'api_key', title: 'Key' },
         { key: 'email', title: 'Email' },
         { key: 'role', title: 'Role' },
         { key: 'total_fee', title: '总消费' },
@@ -57,15 +60,14 @@ export default {
         // { key: 'created_at', title: 'Date' },
         { key: 'action', title: 'Action' },
       ],
-      form: { name: '', email: '', role: '', total_fee: '', month_fee: '', month_quota: '' },
+      form: { name: '', email: '', role: 'user', month_quota: '' ,balance:0},
       rules: {
         name: [{ required: true, message: 'Please input name...' }],
-        email: [{ required: true, message: 'Please input email...' }]
       },
       action: "add",
       show: false,
       page: 1,
-      size: 15,
+      size: 2,
       total: 0,
       loading: false,
       saving: false,
@@ -93,7 +95,8 @@ export default {
           item.month_fee = parseFloat(item.month_fee)
           item.month_quota = parseFloat(item.month_quota)
           return item
-        })
+        });
+        this.total = ~~res.data.total;
         this.items = items
       }).finally(() => {
         this.loading = false

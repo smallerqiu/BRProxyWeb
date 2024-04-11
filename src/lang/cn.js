@@ -1,6 +1,6 @@
 export default {
   login: {
-    title: 'Sign in to BRProxy'
+    title: '登录'
   },
   main: {
 

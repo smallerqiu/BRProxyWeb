@@ -15,8 +15,15 @@
             </Dropdown>
             <Button :icon="theme != 'dark' ? Moon : Sunny" theme="normal" size="small" @click="switchMode" />
             <!-- <Input :icon="Search" theme="light" shape="circle" placeholder="搜索" style="width:200px" /> -->
-            <Avatar style="background:#3a95ff" :size="25">{{ name }}</Avatar>
-            <span>{{ name }}</span>
+            <Dropdown show-placement-arrow trigger="hover" placement="bottom-right" @click="sign_out">
+              <div>
+                <Avatar style="background:#3a95ff" :size="25">{{ name }}</Avatar>
+                <span>{{ name }}</span>
+              </div>
+              <Menu slot="content">
+                <MenuItem key="sign_out">Sign out </MenuItem>
+              </Menu>
+            </Dropdown>
           </Space>
           </Col>
         </Row>
@@ -78,6 +85,11 @@ export default {
   mounted() {
   },
   methods: {
+    sign_out() {
+      localStorage.setItem('key', '')
+      localStorage.setItem('role', '')
+      this.$router.push('/login')
+    },
     switchMode() {
       const body = document.documentElement;
       if (body.hasAttribute('theme-mode')) {

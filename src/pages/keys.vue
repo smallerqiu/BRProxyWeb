@@ -159,6 +159,7 @@ export default {
           this.$http.post(apiPath, this.form).then(res => {
             this.show = false
             this.$Message.success("Save successfuly.")
+            this.get_data()
           }).finally(() => {
             this.saving = false
           })

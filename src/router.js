@@ -8,7 +8,7 @@ VueRouter.prototype.push = function push(location, onResolve, onReject) {
   if (onResolve || onReject) return originalPush.call(this, location, onResolve, onReject)
   return originalPush.call(this, location).catch(err => err)
 }
-import { Home, Tv, Globe, StatsChart, Timer, People, DocumentText, Hammer, Link } from 'kui-icons'
+import { Home, Tv, Globe, StatsChart, Timer, People, DocumentText, Hammer, Link, Key } from 'kui-icons'
 
 const router = new VueRouter({
   mode: 'history',
@@ -40,14 +40,15 @@ const router = new VueRouter({
         {
           path: '/admin/keys',
           name: 'Admin',
-          meta: { title: 'API Keys', icon: Hammer },
+          meta: { title: 'API Keys', icon: Key },
           component: () => import(/*webpackChunkName:'Home'*/'./pages/keys')
         },
         {
-          path: '/admin/huati',
+          path: '/admin/sessions',
           name: 'huati',
           meta: { title: '话题列表', icon: Hammer },
-          component: () => import(/*webpackChunkName:'Home'*/'./pages/huati')
+          component: () => import(/*webpackChunkName:'Home'*/'./pages/huati'),
+          hidden: true,
         }
       ]
     },

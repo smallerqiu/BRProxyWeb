@@ -74,7 +74,7 @@ export default {
       action: "add",
       show: false,
       page: 1,
-      size: 2,
+      size: 15,
       total: 0,
       loading: false,
       saving: false,
@@ -135,7 +135,7 @@ export default {
       this.action = 'new'
       this.title = 'New'
       this.show = true
-      this.form.id = ''
+      this.form.id = 0;
       this.form.role = 'user'
       this.$nextTick(() => {
         this.$refs.form.reset()
@@ -155,7 +155,8 @@ export default {
             })
             return
           }
-          this.$http.post('/admin/api-key/update', this.form).then(res => {
+          const apiPath = this.action == 'new' ? "/admin/api-key/apply": "/admin/api-key/update";
+          this.$http.post(apiPath, this.form).then(res => {
             this.show = false
             this.$Message.success("Save successfuly.")
           }).finally(() => {

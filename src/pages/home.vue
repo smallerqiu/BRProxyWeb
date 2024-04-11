@@ -21,7 +21,7 @@
       </Space>
     </Card>
 
-    <Card title="全体" bordered>
+    <Card title="全体" bordered v-if="false">
       <Space class="items">
         <div class="item">
           <span class="key">总消费</span>

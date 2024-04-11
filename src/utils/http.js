@@ -34,7 +34,8 @@ http._base = (method, url, data, api_key) => {
       let host = localStorage.getItem('host')
       // key = localStorage.getItem('key')
       if (!host) {
-        throw new Error("Nees host.")
+        host = "/";
+        // throw new Error("Needs host.")
       }
       if (host.startsWith('/')) {
         host = host.substring(0, host.length - 1);

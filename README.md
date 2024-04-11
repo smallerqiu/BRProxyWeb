@@ -1,24 +1,27 @@
-# ai
+# BRProxy Admin Web
 
-## Project setup
-```
+## Dev
+
+```shell
 npm install
 ```
 
-### Compiles and hot-reloads for development
-```
+```shell
 npm run serve
 ```
 
-### Compiles and minifies for production
-```
+## Prod
+
+Build
+
+```shell
 npm run build
 ```
 
-### Lints and fixes files
-```
-npm run lint
-```
+Then deploy dist files to any Web Server.
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+## Features and Screenshots
+
+My fee
+
+API Keys list
